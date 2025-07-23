@@ -20,7 +20,12 @@ def clima_por_cep():
     try:
         # Etapa 1: Endereço via ViaCEP
         res_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/")
+        if res_cep.status_code != 200:
+            return jsonify({"erro": "Erro ao buscar CEP"}), 500
+
         endereco = res_cep.json()
+        if "erro" in endereco:
+            return jsonify({"erro": "CEP inválido"}), 400
         logradouro = endereco.get("logradouro", "")
         cidade = endereco["localidade"]
         estado = endereco["uf"]
