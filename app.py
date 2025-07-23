@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 @app.route('/clima')
 def clima_por_cep():
+    print("CEP recebido: ", cep)
     cep = request.args.get('cep')
     if cep:
         cep = cep.replace("-", "").strip()
@@ -20,6 +21,7 @@ def clima_por_cep():
     try:
         # Etapa 1: Endereço via ViaCEP
         res_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/")
+        print("Resposta do ViaCEP:", res_cep.text)
         if res_cep.status_code != 200:
             return jsonify({"erro": "Erro ao buscar CEP"}), 500
 
