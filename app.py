@@ -11,12 +11,16 @@ app = Flask(__name__)
 
 @app.route('/clima')
 def clima_por_cep():
-    print("CEP recebido: ", cep)
+    
+
     cep = request.args.get('cep')
-    if cep:
-        cep = cep.replace("-", "").strip()
+    print("CEP recebido: ", cep)
+
+    
     if not cep:
         return jsonify({"erro": "CEP não informado"}), 400
+    
+    cep = cep.replace("-", "").strip()
 
     try:
         # Etapa 1: Endereço via ViaCEP
