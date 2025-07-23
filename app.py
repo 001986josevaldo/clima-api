@@ -25,11 +25,14 @@ def clima_por_cep():
     try:
         # Etapa 1: Endereço via ViaCEP
         res_cep = requests.get(f"https://viacep.com.br/ws/{cep}/json/")
+        
         print("Resposta do ViaCEP:", res_cep.text)
+
         if res_cep.status_code != 200:
             return jsonify({"erro": "Erro ao buscar CEP"}), 500
 
         endereco = res_cep.json()
+
         if "erro" in endereco:
             return jsonify({"erro": "CEP inválido"}), 400
         logradouro = endereco.get("logradouro", "")
@@ -38,12 +41,24 @@ def clima_por_cep():
 
         # Etapa 2: Coordenadas via Nominatim
         query = f"{logradouro}, {cidade}, {estado}, Brasil"
+        print("Query Nominatim:", query)
         res_geo = requests.get("https://nominatim.openstreetmap.org/search", params={
             "q": query,
             "format": "json"
         }, headers={"User-Agent": "Mozilla/5.0"})
-        local = res_geo.json()[0]
-        lat, lon = local["lat"], local["lon"]
+
+        print("Resposta do Nominatim:", res_geo.text)
+
+        try:
+            geo_data = res_geo.json()
+            if not geo_data:
+                return jsonify({"erro": "Coordenadas não encontradas para esse endereço"}), 400
+
+            local = geo_data[0]
+            lat, lon = local["lat"], local["lon"]
+        except Exception as e:
+            return jsonify({"erro": "Erro ao processar coordenadas", "detalhes": str(e)}), 500
+
         #print(local)
         altitude = "indisponível"
         try:
