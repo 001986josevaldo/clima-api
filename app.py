@@ -40,8 +40,10 @@ def clima_por_cep():
         estado = endereco["uf"]
 
         # Etapa 2: Coordenadas via Nominatim
-        query = f"{logradouro}, {cidade}, {estado}, Brasil"
+
+        query = f"{logradouro}, {cidade}, {estado}"
         print("Query Nominatim:", query)
+
         res_geo = requests.get("https://nominatim.openstreetmap.org/search", params={
             "q": query,
             "format": "json"
@@ -52,7 +54,7 @@ def clima_por_cep():
         try:
             geo_data = res_geo.json()
             if not geo_data:
-                return jsonify({"erro": "Coordenadas não encontradas para esse endereço"}), 400
+                return jsonify({"erro": "Endereço não encontrado no Nominatim"}), 404
 
             local = geo_data[0]
             lat, lon = local["lat"], local["lon"]
