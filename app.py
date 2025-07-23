@@ -2,13 +2,14 @@ from flask import Flask, request, jsonify
 import requests
 import os
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 load_dotenv()
 # para executar
 # python3.10 app.py
 
 app = Flask(__name__)
-
+CORS(app)  # <-- habilita CORS para todos os domínios
 
 
 @app.route('/clima')
