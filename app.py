@@ -3,11 +3,19 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from ClimaController import ClimaController
+import os
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route('/')
+def index():
+    return jsonify({
+        "mensagem": "✅ API Clima ativa!",
+        "exemplo": "/clima?cep=01001000"
+    })
 
 @app.route('/clima')
 def clima_por_cep():
@@ -20,11 +28,6 @@ def clima_por_cep():
             "exemplo": "/clima?cep=01001000"
         }), 400
 
-    return jsonify({
-        "mensagem": "CEP recebido com sucesso",
-        "cep": cep
-    })
-
     cep = cep.replace("-", "").strip()
 
     try:
@@ -34,7 +37,11 @@ def clima_por_cep():
 
     except Exception as e:
         print("Erro inesperado:", str(e))
-        return jsonify({"erro": "Erro no processamento", "detalhes": str(e)}), 500
+        return jsonify({
+            "erro": "Erro no processamento",
+            "detalhes": str(e)
+        }), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Necessário para Railway
+    app.run(host='0.0.0.0', port=port, debug=True)
