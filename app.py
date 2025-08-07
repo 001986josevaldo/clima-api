@@ -15,7 +15,15 @@ def clima_por_cep():
     print("CEP recebido:", cep)
 
     if not cep:
-        return jsonify({"erro": "CEP não informado"}), 400
+        return jsonify({
+            "erro": "CEP não informado",
+            "exemplo": "/clima?cep=01001000"
+        }), 400
+
+    return jsonify({
+        "mensagem": "CEP recebido com sucesso",
+        "cep": cep
+    })
 
     cep = cep.replace("-", "").strip()
 
